@@ -39,7 +39,8 @@ var (
 	flagPullRequestIssue,
 	flagPullRequestMessage,
 	flagPullRequestFile string
-	flagPullRequestForce bool
+	flagPullRequestForce     bool
+	flagBrowsePullRequestURL bool
 )
 
 func init() {
@@ -49,6 +50,7 @@ func init() {
 	cmdPullRequest.Flag.StringVarP(&flagPullRequestMessage, "message", "m", "", "MESSAGE")
 	cmdPullRequest.Flag.BoolVarP(&flagPullRequestForce, "force", "f", false, "FORCE")
 	cmdPullRequest.Flag.StringVarP(&flagPullRequestFile, "file", "F", "", "FILE")
+	cmdPullRequest.Flag.BoolVarP(&flagBrowsePullRequestURL, "browse", "o", false, "BROWSE")
 
 	CmdRunner.Use(cmdPullRequest)
 }
@@ -176,7 +178,16 @@ func pullRequest(cmd *Command, args *Args) {
 		}
 	}
 
-	args.Replace("echo", "", pullRequestURL)
+	if flagBrowsePullRequestURL {
+		args.Before("echo", pullRequestURL)
+		launcher, err := utils.BrowserLauncher()
+		utils.Check(err)
+		args.Replace(launcher[0], "", launcher[1:]...)
+		args.AppendParams(pullRequestURL)
+	} else {
+		args.Replace("echo", "", pullRequestURL)
+	}
+
 	if flagPullRequestIssue != "" {
 		args.After("echo", "Warning: Issue to pull request conversion is deprecated and might not work in the future.")
 	}

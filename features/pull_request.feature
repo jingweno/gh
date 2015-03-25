@@ -443,6 +443,19 @@ Feature: hub pull-request
     When I successfully run `hub pull-request -m hereyougo`
     Then the output should contain exactly "the://url\n"
 
+  Scenario: Open pull request in web browser
+    Given the "origin" remote has url "git://github.com/github/coral.git"
+    And the "doge" remote has url "git://github.com/mislav/coral.git"
+    And I am on the "feature" branch pushed to "doge/feature"
+    Given the GitHub API server:
+      """
+      post('/repos/github/coral/pulls') {
+        json :html_url => "the://url"
+      }
+      """
+    When I successfully run `hub pull-request -o -m hereyougo`
+    Then "open the://url" should be run
+
   @wip
   Scenario: Create pull request to "upstream" remote
     Given the "upstream" remote has url "git://github.com/github/coral.git"
