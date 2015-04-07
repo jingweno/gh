@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 )
 
 var (
@@ -145,6 +146,8 @@ func loadFromFile(filename string, v interface{}) error {
 
 func configsFile() string {
 	configsFile := os.Getenv("GH_CONFIG")
+	configsFile = strings.Replace(configsFile, "~", os.Getenv("HOME"), 1)
+
 	if configsFile == "" {
 		configsFile = defaultConfigsFile
 	}
