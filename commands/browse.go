@@ -69,8 +69,7 @@ func browse(command *Command, args *Args) {
 		project = github.NewProject("", flagBrowseProject, "")
 	} else {
 		// gh browse
-		branch, project, err = localRepo.RemoteBranchAndProject("")
-		utils.Check(err)
+		branch, project, _ = localRepo.RemoteBranchAndProject("")
 	}
 
 	if project == nil {

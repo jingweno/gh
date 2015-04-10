@@ -108,7 +108,7 @@ func (r *GitHubRepo) RemoteBranchAndProject(owner string) (branch *Branch, proje
 	}
 
 	pushDefault, _ := git.Config("push.default")
-	if pushDefault == "upstream" || pushDefault == "tracking" {
+	if pushDefault == "upstream" || pushDefault == "tracking" || pushDefault == "simple" {
 		branch, err = branch.Upstream()
 		if err != nil {
 			return
